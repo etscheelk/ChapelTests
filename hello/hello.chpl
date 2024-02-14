@@ -52,10 +52,19 @@ proc checkNumWorking() {
     writeln("Done with checkNumWorking!");
 }
 
-cobegin {
-    forLoop();
-    checkNumWorking();
+module bob {
+    
 }
+
+/*
+Test: Have a for-loop some number of times 
+and have a second thread working at the same time 
+reading the number of actively running tasks.
+*/
+// cobegin {
+//     forLoop();
+//     checkNumWorking();
+// }
 
 // var arr = 1..20;
 
@@ -63,6 +72,10 @@ cobegin {
 //     writeln(i)
 // }
 
-proc main() {
+proc main(args: [] string) {
     writeln("Hello from main, if it worked");
+    
+    for str in args {
+        writeln(str);
+    }
 }
