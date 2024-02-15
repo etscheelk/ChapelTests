@@ -33,6 +33,15 @@ for i in 1..numToMake {
         e.g.
         999 / 4 = 249.75. 249 days times 4 printers make 996. Therefore, need 250 days to make 999. 
     */
-    var a : int = Math.ceil( (numToMake - made) / numPrinters:real ):int
-    
+    var a : int = Math.ceil( (numToMake - made) / numPrinters:real ):int + (numPrinters - 1);
+
+    minDays = Math.min(minDays, a);
+    // if a < minDays {
+    //     minDays = a;
+    // }
+
+
+    numPrinters += 1;
 }
+
+writeln(minDays);
