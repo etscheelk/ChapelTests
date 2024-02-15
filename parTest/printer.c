@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 
+
 int main(int argc, char *argv[]) 
 {
     char input[10];
@@ -9,21 +10,24 @@ int main(int argc, char *argv[])
     fgets(input, 10, stdin);
     
     size_t numToMake = atoi(input);
-    size_t numDays = numToMake;
+    size_t numDays = 0;
     size_t numPrinters = 1;
+    size_t made = 0;
     
-    for (int i = 0; i < numToMake; ++i) 
+    while(made < numToMake)
     {
-        size_t a = ceil((float) numToMake / (float) numPrinters) + i;
-        printf("numToMake: %ld\nnumPrinters: %ld\ni: %d\nnumDays: %ld\na: %ld\n\n\n", numToMake, numPrinters, i, numDays, a);
-        
-        if (a < numDays)
+        if ((numToMake-made) > numPrinters)
         {
-            numDays = a;
+            numDays += 1;
+            numPrinters += numPrinters;
         }
-        
-        numPrinters *= 2;
+        else
+        {
+            numDays += 1;
+            made += numPrinters;
+        }
     }
+
     
-    printf("%ld\n", numDays);
+    printf("%ld\n", numDays);    
 }
