@@ -33,27 +33,27 @@ struct match
  * @param teams
  * @return vector<int>
  */
-vector<int> evalScores(const vector<match> &matches, const vector<int> &teams)
+vector<int> evalScores(const vector<match> &matches,  const vector<int> &initScores)
 {
-	vector<int> ret(teams);
+	vector<int> ret(initScores);
 
 	for (const match &m : matches)
 	{
-		if (m.s == m.draw)
+		if (m.s == match::status::draw)
 		{
 			ret[m.teamA - 1] += 1;
 			ret[m.teamB - 1] += 1;
 		}
-		else if (m.s == m.aWin)
+		else if (m.s == match::status::aWin)
 		{
 			ret[m.teamA - 1] += 2;
 		}
-		else if (m.s == m.bWin)
+		else if (m.s == match::status::bWin)
 		{
 			ret[m.teamB - 1] += 2;
 		}
 	}
-
+	
 	return ret;
 }
 
@@ -89,13 +89,14 @@ int main(int argc, char *argv[])
 			break;
 		cin >> numMatches;
 
-		cout << "numTeams: " << numTeams << "\nnumMatches: " << numMatches << endl;
+		// cout << "numTeams: " << numTeams << "\nnumMatches: " << numMatches << endl;
 
-		vector<int> teams(numTeams, 0);
+		vector<int> initScores(numTeams, 0);
 		for (int i = 0; i < numTeams; ++i)
 		{
-			cin >> teams[i];
+			cin >> initScores[i];
 		}
+		
 
 		vector<match> matches;
 		for (int i = 0; i < numMatches; ++i)
@@ -116,7 +117,7 @@ int main(int argc, char *argv[])
 		int teamN = numTeams - 1;
 		for (match& m : matches)
 		{
-			cout << "teamA: " << m.teamA << " teamB: " << m.teamB << endl;
+			// cout << "teamA: " << m.teamA << " teamB: " << m.teamB << endl;
 			if (m.teamA-1 == teamN)
 			{
 				m.s = match::status::aWin;
@@ -126,7 +127,7 @@ int main(int argc, char *argv[])
 				m.s = match::status::bWin;
 			}
 		}
-		teams = evalScores(matches, teams);
+		vector<int> scores = evalScores(matches, initScores);
 
 		// Do a few generations trying to optimize the wins, losses, draws of the other teams
 		// If we have a team where it's 5-4, there's currently no point to modifying it <--- you're wrong.
@@ -141,36 +142,62 @@ int main(int argc, char *argv[])
 		int it = 0;
 		while (!won && it < numMatches)
 		{
-			
 			// Iterate through the match list trying to find gaps to close
 			for (match& m : matches) 
 			{
 				int teamA = m.teamA-1;
 				int teamB = m.teamB-1;
 
+				// Anything involving team N has already been decided (they win)
 				if (teamA == teamN || teamB == teamN) continue;
 
-				int teamAscore = teams[teamA];
-				int teamBscore = teams[teamB];
+
+				
+				int teamAscore = scores[teamA];
+				int teamBscore = scores[teamB];
 				int diff = abs(teamAscore - teamBscore);
 
 				if (diff <= 1) continue;
 
+				// Check on the win status
+				bool aWinning = (teamAscore > teamBscore) ? true : false;
+				match::status s = m.s;
 
+				if (s == match::status::draw) 
+				{
+					m.s = (aWinning) ? match::status::bWin : match::status::aWin;
+				}
+
+				scores = evalScores(matches, initScores);
 			}
 
 			it++;
 		}
 
-		for (auto x : teams)
+		// for (auto x : scores)
+		// {
+		// 	cout << x << " ";
+		// }
+		// cout << endl;
+
+
+		// cout << "Final matches:\n------------------------------\n";
+		// printFinalMatches(matches);
+		int nScore = scores[teamN];
+		bool won2 = true;
+		for (auto i = 0UL; i < scores.size() - 1; ++i) 
 		{
-			cout << x << " ";
+			if (scores[i] >= nScore) 
+			{
+				cout << "NO" << endl;
+				won2 = false;
+				break;
+			}
 		}
-		cout << endl;
 
-
-		cout << "Final matches:\n";
-		cout << matches.size() << endl;
-		printFinalMatches(matches);
+		if (won2) 
+		{
+			printFinalMatches(matches);
+		}
 	}
 }
