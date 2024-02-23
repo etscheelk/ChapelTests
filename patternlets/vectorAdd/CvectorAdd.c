@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include <immintrin.h>
+
 int main(int argc, char *argv[])
 {
     unsigned int n = 100000;
@@ -30,7 +32,7 @@ int main(int argc, char *argv[])
     }
 
     double start = omp_get_wtime();
-    #pragma omp parallel for
+    #pragma omp parallel for num_threads(4)
     for (int i = 0; i < n; ++i) 
     {
         C[i] = A[i] + B[i];
@@ -38,6 +40,8 @@ int main(int argc, char *argv[])
     double end = omp_get_wtime();
     printf("Simple parallel C vector add: %lf ms\n", (end - start) * 1000.);
 
+    
+    
 
     free(A);
     free(B);
