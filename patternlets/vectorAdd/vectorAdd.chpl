@@ -2,6 +2,7 @@ use Time;
 
 config const n : uint = 100_000;
 config const quiet : bool = false;
+config const skip : bool = false;
 
 var A : [1..n] real = 2.0;
 var B = [1..n] 5.0;
@@ -22,14 +23,16 @@ proc writeC() {
 
 writeC();
 
-C = 0.0;
-t.start();
-coforall (a, b, c) in zip(A, B, C) {
-    c = a + b;
-}
-t.stop();
-if !quiet then
-    writeln("Explicit coforall add: ", t.elapsed()*1_000, " ms");
-t.clear();
+if (!skip) {
+    C = 0.0;
+    t.start();
+    coforall (a, b, c) in zip(A, B, C) {
+        c = a + b;
+    }
+    t.stop();
+    if !quiet then
+        writeln("Explicit coforall add: ", t.elapsed()*1_000, " ms");
+    t.clear();
 
-writeC();
+    writeC();
+}
