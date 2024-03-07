@@ -26,7 +26,7 @@ writeC();
 if (!skip) {
     C = 0.0;
     t.start();
-    coforall (a, b, c) in zip(A, B, C) {
+    forall (a, b, c) in zip(A, B, C) {
         c = a + b;
     }
     t.stop();
