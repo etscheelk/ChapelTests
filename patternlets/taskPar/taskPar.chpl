@@ -29,7 +29,7 @@ proc main()
         // C
         {
             writeln("I'm a block");
-            writeln("^ and this message should come below");
+            writeln("^ and this message will come below");
         }
     }
 
