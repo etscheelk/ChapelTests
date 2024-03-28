@@ -21,10 +21,13 @@ writeln("Minloc found!\nmin: ", min, "\tloc: ", loc);
 // bitwise xor of every element in A
 // All operators are + * && || & | ^ min max minloc maxloc
 var x = ^ reduce A;
-writeln(x);
+writeln("xor reduce A: ", x);
 
 // one line prefix sum
 // as well as inline array of all 1's.
 var B = + scan 1.0 : [1..100] real(64);
 // var B = + scan [i in 1..100] i**2; // results in scan being serialized
 writeln(B[1..20]);
+
+// Reduce on a portion 
+writeln(+ reduce A[1..5]);
