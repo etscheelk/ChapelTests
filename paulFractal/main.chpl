@@ -27,18 +27,29 @@ writeln(dot(rotMat, z));
 
 
 
-var rs = new Random.randomStream(int(64), 5);
-var num = rs.next();
-var numRandsLeft = 64;
-var x = 0.5;
-var y = 0.0;
+// var rs = new Random.randomStream(int(64), 5);
+// var num = rs.next();
+// var numRandsLeft = 64;
+// var numRandsLeft = 64;
+// var x = 0.5;
+// var y = 0.0;
 var rotRad2 : real(64) = 1.724643921305295;
 var thetaOffset : real(64) = 3.0466792337230033;
-for i in 0..#100_000_000 {
-    // Find random position first
 
+on here.gpus[0] {
 
-    if (num & 1 == 0) {
+foreach i in 0..#100_000_000 
+    with (
+        var rs = new Random.randomStream(int(64)), 
+        var rand = rs.next(), 
+        var numRandsLeft = 64,
+        var x = 0.5,
+        var y = 0.0,
+        ref density
+    ) 
+    
+    {
+    if (rand & 1 == 0) {
         (x, y) = (
             x * cos(rotRad2) + y * sin(rotRad2),
             y * cos(rotRad2) - x * sin(rotRad2)
@@ -53,10 +64,10 @@ for i in 0..#100_000_000 {
     }
 
     numRandsLeft -= 1;
-    num >>= 1;
+    rand >>= 1;
 
     if (numRandsLeft == 0) {
-        num = rs.next();
+        rand = rs.next();
         numRandsLeft = 64;
     }
 
@@ -66,8 +77,9 @@ for i in 0..#100_000_000 {
         density[xx:uint(32), yy:uint(32)] += 1;
     }
 }
+}
 
-writeln(density);
+// writeln(density);
 // forall val in density {
 //     if val != 0 {
 //         writeln(val);
