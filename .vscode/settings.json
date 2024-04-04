@@ -4,5 +4,5 @@
         "immintrin.h": "c"
     },
 
-    "chapel.CHPL_HOME": "/home/lalaith/chapel-2.0.0"
+    "chapel.CHPL_HOME": "/home/lalaith/lib/chapel-2.0.0"
 }

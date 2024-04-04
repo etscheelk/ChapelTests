@@ -31,3 +31,4 @@ writeln(B[1..20]);
 
 // Reduce on a portion 
 writeln(+ reduce A[1..5]);
+
