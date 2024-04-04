@@ -4,6 +4,8 @@ use LAPACK;
 use Math;
 use Random;
 
+
+
 //
 config const dim : int = 1000;
 
@@ -22,15 +24,17 @@ var z = Vector([1,1], eltType=real(64));
 
 writeln(dot(rotMat, z));
 
-for i in 0..#100_000 {
-    // find random position
 
-}
 
-on here.GPUS[0] {
+// for i in 0..#100_000 {
+//     // find random position
+
+// }
+
+// on here.GPUS[0] {
     
 
-    forall i in 1..100_000 {
+//     forall i in 1..100_000 {
 
-    }
-}
+//     }
+// }
