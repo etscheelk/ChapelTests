@@ -5,14 +5,14 @@ use Math;
 use Random;
 
 //
-config const dim : int = 1000;
+config const dim : int = 50;
 
 config const rotation : real(64) = 45.0;
 const rotRad : real = rotation * pi / 180.0;
 //
 
 
-var density : [0..#dim, 0..#dim] uint(32) = 0;
+var density : [0..#dim, 0..#dim] atomic uint(32) = 0;
 
 var rotMat = Matrix([cos(rotRad), -sin(rotRad)], [sin(rotRad), cos(rotRad)], eltType=real(64));
 
@@ -36,9 +36,9 @@ writeln(dot(rotMat, z));
 var rotRad2 : real(64) = 1.724643921305295;
 var thetaOffset : real(64) = 3.0466792337230033;
 
-on here.gpus[0] {
+// on here.gpus[0] {
 
-foreach i in 0..#100_000_000 
+forall i in 0..#100_000_000 
     with (
         var rs = new Random.randomStream(int(64)), 
         var rand = rs.next(), 
@@ -74,19 +74,25 @@ foreach i in 0..#100_000_000
     var xx = (x / 2.0 + 0.5) * dim;
     var yy = (y / 2.0 + 0.5) * dim;
     if (xx > 0 && xx < dim && yy > 0 && yy < dim) {
-        density[xx:uint(32), yy:uint(32)] += 1;
+        density[xx:uint(32), yy:uint(32)].add(1);
     }
 }
-}
+// }
 
-// writeln(density);
+writeln(density);
 // forall val in density {
 //     if val != 0 {
 //         writeln(val);
 //     }
 // }
 
-writeln("Sum of all vals: ", + reduce density);
+// writeln("Sum of all vals: ", + reduce density);
+
+var sum = 0;
+forall i in density with(+ reduce sum) {
+    sum += i.read():int(64);
+}
+writeln(sum);
 
 // on here.GPUS[0] {
     
