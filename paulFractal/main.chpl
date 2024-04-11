@@ -22,11 +22,6 @@ var z = Vector([1,1], eltType=real(64));
 
 writeln(dot(rotMat, z));
 
-
-
-
-
-
 // var rs = new Random.randomStream(int(64), 5);
 // var num = rs.next();
 // var numRandsLeft = 64;
@@ -36,7 +31,6 @@ writeln(dot(rotMat, z));
 var rotRad2 : real(64) = 1.724643921305295;
 var thetaOffset : real(64) = 3.0466792337230033;
 
-// on here.gpus[0] {
 
 forall i in 0..#100_000_000 
     with (
@@ -48,7 +42,7 @@ forall i in 0..#100_000_000
         ref density
     ) 
     
-    {
+{
     if (rand & 1 == 0) {
         (x, y) = (
             x * cos(rotRad2) + y * sin(rotRad2),
@@ -77,7 +71,6 @@ forall i in 0..#100_000_000
         density[xx:uint(32), yy:uint(32)].add(1);
     }
 }
-// }
 
 writeln(density);
 // forall val in density {
