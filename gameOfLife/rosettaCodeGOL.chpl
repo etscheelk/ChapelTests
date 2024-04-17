@@ -8,11 +8,11 @@ enum State { dead = 0, alive = 1 };
 
 class ConwaysGameofLife 
 {
-	var gridDomain: domain(2, int);
-	var computeDomain: subdomain(gridDomain);
+	var gridDomain : domain(2, int);
+	var computeDomain : subdomain(gridDomain);
 	var grid : [gridDomain] State;
 
-	proc init(height: int, width: int) 
+	proc init(height : int, width : int) 
 	{
 		this.gridDomain = {0..#height+2, 0..#width+2};
 		this.computeDomain = this.gridDomain.expand(-1);
@@ -40,7 +40,7 @@ class ConwaysGameofLife
 
 	proc prettyPrint() : string 
 	{
-		var str: string;
+		var str : string;
 		for i in this.gridDomain.dim(0) 
 		{
 			if i == 0 || i == gridDomain.dim(0).last 

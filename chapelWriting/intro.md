@@ -76,7 +76,7 @@ coforall i in 1.10
 }
 ```
 
-In this case, 10 tasks are created, one for each index of the problem. 
+In this case, 10 tasks are created, one for each index of the problem. It is unwise to use `coforall` on large arrays, since there is considerable overhead of task creation. 
 
 If you wanted to fork a single thread and allow processing to continue past that point, Chapel has the `begin` statement, which creates a single task.
 
@@ -122,10 +122,13 @@ cobegin
 
     sayGoodbye();
 }
+
+writeln("main thread!");
 ```
 
-Here, the `cobegin` statement will create three tasks. 
+Here, the `cobegin` statement will create three tasks that may execute in any order, and all must complete before execution in the main thread continues. 
 
+Variables such as `sync` and `atomic` variables allow for inter-task communication. Chapel makes it very simple to conceptualize and program task parallel programming 
 
 
 ## Beginning Language Specification
@@ -196,21 +199,17 @@ Additionally, you can write `var C : [d] real = 1.0;`, where `var d : domain(1) 
 
 The domain is the object which defines a set of indices. This will create a 0-indexed 1-dimensional array with 12 elements initialized to 1.0. 
 
+An array must have a domain and a type.
+
+
 #### Multidimensional
 
+Rectangular arrays in multiple dimensions can be created with `var A : [1..10, 1..10] = 0;`. Then the array can be accessed by comma-separated indices like `var a = A[1, 2];`. 
 
+There are several ways to pass a function to a function. By default, arrays passed to functions are `const`. Variable intents describe alternative ways to pass variables into functions. 
 
+First is the most basic way:
 
-```chapel
-const D = {1..10};
-// ==> writeln(D.type:string) -> domain(1, int(64), one)
-//      .type is like a member access
-//       and :string casts the result to string.
+`proc takesArray(arr : [])`: There are no restrictions on the size, type, or domain of A.
 
-// The Array
-var
-```
-
-`const D = {1..10};`. The type of `D` is, as printed by `D.type:string`, `domain(1, int(64), one)` (`.type` is like a member access and `:string` casts the result to string for printing). 
-
-An array will always have a domain
+`proc takesArrayDomain(arr : [?D])` deduces the domain
