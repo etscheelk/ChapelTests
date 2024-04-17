@@ -173,3 +173,44 @@ Block comment
 
 // Single line comment
 ```
+
+### Arrays
+
+#### Simple Creation
+
+The most basic Chapel array can be created with `var A: [1..10] real;`. This will create
+an array of 10 elements initialized to 0.0, where `1..10` *represents the set of indices* of `A`. This means `A[0]` *will result in a runtime error*. 
+
+    error: halt reached - array index out of bounds
+    note: index was 0 but array bounds are 1..10
+
+If you instead wish to write this set of indices (the domain) starting at some index and continuing for `n` elements, you can write `var B : [0..#10] real;`, which will be a 0-indexed array with 10 elements (note the (#) pound sign). 
+
+Runtime-size-dependent domain and array creation is accepted. 
+
+Additionally, you can write `var C : [d] real = 1.0;`, where `var d : domain(1) = {0..#12};`. 
+
+- First, `domain(1)` declares it will be a one-dimensional set of indices. 
+- Then, `{0..#12}` defines a domain (set of indices) that is 0-indexed and has 12 elements.
+- Further, this domain `d` can be used to create an array with the given domain. 
+
+The domain is the object which defines a set of indices. This will create a 0-indexed 1-dimensional array with 12 elements initialized to 1.0. 
+
+#### Multidimensional
+
+
+
+
+```chapel
+const D = {1..10};
+// ==> writeln(D.type:string) -> domain(1, int(64), one)
+//      .type is like a member access
+//       and :string casts the result to string.
+
+// The Array
+var
+```
+
+`const D = {1..10};`. The type of `D` is, as printed by `D.type:string`, `domain(1, int(64), one)` (`.type` is like a member access and `:string` casts the result to string for printing). 
+
+An array will always have a domain
