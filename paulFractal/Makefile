@@ -9,7 +9,7 @@ deps = main.chpl
 
 out = main
 
-$(out): $(deps)
+$(out): $(deps) image.chpl
 	chpl $(sets) $(errs) $(deps) -o $(out)
 
 

@@ -18,6 +18,7 @@ class ConwaysGameofLife
 		this.computeDomain = this.gridDomain.expand(-1);
 	}
 
+
 	proc step()
 	{
 		var tempGrid: [this.computeDomain] State;
@@ -37,6 +38,7 @@ class ConwaysGameofLife
 	{
 		return this.grid[i,j];
 	}
+
 
 	proc prettyPrint() : string 
 	{
@@ -71,7 +73,9 @@ class ConwaysGameofLife
 		return str;
 	}
 
+
 }
+
 
 proc main() 
 {
@@ -83,7 +87,7 @@ proc main()
 
 	for i in 1..3 
 	{
-		writeln( game.prettyPrint() );
+		writeln(game.prettyPrint());
 		game.step();
 	}
 }

@@ -212,4 +212,39 @@ First is the most basic way:
 
 `proc takesArray(arr : [])`: There are no restrictions on the size, type, or domain of A.
 
-`proc takesArrayDomain(arr : [?D])` deduces the domain
+`proc takesArrayDomain(arr : [?D])` deduces the domain to a function-local variable `D`. 
+
+`proc takesArrayAndDomain(arr : [], d : domain(2))` takes in the array and requires that its domain be 2-dimensional. 
+
+
+### Reduction
+
+- Plain reduces
+- Reduces on for-loops (`with` syntax, can also touch on intents here)
+
+### Variables part 2
+
+- Atomic (relevant for parallel on primitive types [not strings])
+- Sync
+- intents (in, out, inout, ref, const, const ref, ...)
+
+### "Structured Types"
+
+Probably not the most relevant for a parallel reader but there are some tips here that I think will be helpful. 
+
+Talking about generics would be helpful too. I'm just thinking about topics I've found it hard to figure out whenever I've been doing stuff. 
+
+- Class
+
+    - They can read themselves on owned, borrowed, managed
+- Array access overload
+    - `proc this(i : int, j : int) ref : T`
+- Operator overload
+    - `overator +(left, right)`
+- Record
+- Union
+- Tuples
+
+### Function Promotion
+
+- Inputs can become vectorized automatically, like R. 

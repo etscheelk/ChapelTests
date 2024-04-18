@@ -4,12 +4,17 @@ use LAPACK;
 use Math;
 use Random;
 
+use image;
+use IO;
+
 //
 config const dim : int = 50;
 
 config const rotation : real(64) = 45.0;
 const rotRad : real = rotation * pi / 180.0;
 //
+
+config const mult : uint = 1;
 
 
 var density : [0..#dim, 0..#dim] atomic uint(32) = 0;
@@ -32,16 +37,16 @@ var rotRad2 : real(64) = 1.724643921305295;
 var thetaOffset : real(64) = 3.0466792337230033;
 
 
-forall i in 0..#100_000_000 
-    with (
-        var rs = new Random.randomStream(int(64)), 
-        var rand = rs.next(), 
-        var numRandsLeft = 64,
-        var x = 0.5,
-        var y = 0.0,
-        ref density
-    ) 
-    
+forall i in 0..#(100_000_000 * mult)
+with 
+(
+    var rs = new Random.randomStream(int(64)), 
+    var rand = rs.next(), 
+    var numRandsLeft = 64,
+    var x = 0.5,
+    var y = 0.0,
+    ref density
+) 
 {
     if (rand & 1 == 0) {
         (x, y) = (
@@ -72,7 +77,22 @@ forall i in 0..#100_000_000
     }
 }
 
-writeln(density);
+
+// forall i in density {
+//     var v = i.read();
+
+//     if (v != 0) {
+//         i.write(log(v):uint(32));
+//     }
+// }
+
+// var d2 = density:[0..#dim, 0..#dim] uint;
+var fw = IO.openWriter("./test.bmp", locking = false);
+
+image.writeImageBMP(fw, density);
+
+// image.writeImageBMP()
+// writeln(density);
 // forall val in density {
 //     if val != 0 {
 //         writeln(val);

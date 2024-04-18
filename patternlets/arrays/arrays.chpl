@@ -39,6 +39,7 @@ proc takesArray(arr : []) {
 }
 takesArray(DD);
 
+
 // proc process2DArray(arr: [1..?] real) {
 //     const numRows = arr.numDims(1);
 //     const numCols = arr.numDims(2);
