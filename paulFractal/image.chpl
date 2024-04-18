@@ -161,10 +161,10 @@ proc writeImageBMP(outfile, pixels) {
     //   outfile.writeBits(brightest:uint(8), 8);
 
       // write 24-bit color value
-      outfile.writeBits(bluev, bitsPerColor);
-      outfile.writeBits(greenv, bitsPerColor);
-      // outfile.writeBits(redv, bitsPerColor);
-      // outfile.writeBits(redv, bitsPerColor);
+      // outfile.writeBits(bluev, bitsPerColor);
+      // outfile.writeBits(greenv, bitsPerColor);
+      outfile.writeBits(redv, bitsPerColor);
+      outfile.writeBits(redv, bitsPerColor);
       outfile.writeBits(redv, bitsPerColor);
     //   outfile.writeBits((p << 8) >> 8, 24);
       nbits += numColors * bitsPerColor;

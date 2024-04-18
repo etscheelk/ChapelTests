@@ -34,7 +34,7 @@ writeln(dot(rotMat, z));
 // var x = 0.5;
 // var y = 0.0;
 var rotRad2 : real(64) = 1.724643921305295;
-rotRad2 = pi/2.0;
+// rotRad2 = pi/2.0;=
 var thetaOffset : real(64) = 3.0466792337230033;
 thetaOffset = 0.41235511241;
 
