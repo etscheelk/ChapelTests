@@ -34,17 +34,19 @@ writeln(dot(rotMat, z));
 // var x = 0.5;
 // var y = 0.0;
 var rotRad2 : real(64) = 1.724643921305295;
+rotRad2 = pi/2.0;
 var thetaOffset : real(64) = 3.0466792337230033;
+thetaOffset = 0.41235511241;
 
-
+var rs = new Random.randomStream(int(64));
 forall i in 0..#(100_000_000 * mult)
 with 
 (
-    var rs = new Random.randomStream(int(64)), 
+    ref rs, 
     var rand = rs.next(), 
     var numRandsLeft = 64,
-    var x = 0.5,
-    var y = 0.0,
+    var x = 0.7,
+    var y = 0.2,
     ref density
 ) 
 {
@@ -53,7 +55,7 @@ with
             x * cos(rotRad2) + y * sin(rotRad2),
             y * cos(rotRad2) - x * sin(rotRad2)
         );
-    }
+    }   
     else {
         var r = x * 0.5 + 0.5;
         var theta = y * pi * thetaOffset;
@@ -78,13 +80,13 @@ with
 }
 
 
-// forall i in density {
-//     var v = i.read();
+forall i in density {
+    var v = i.read();
 
-//     if (v != 0) {
-//         i.write(log(v):uint(32));
-//     }
-// }
+    if (v != 0) {
+        i.write(sqrt(v):uint(32));
+    }
+}
 
 // var d2 = density:[0..#dim, 0..#dim] uint;
 var fw = IO.openWriter("./test.bmp", locking = false);

@@ -214,7 +214,7 @@ First is the most basic way:
 
 `proc takesArrayDomain(arr : [?D])` deduces the domain to a function-local variable `D`. 
 
-`proc takesArrayAndDomain(arr : [], d : domain(2))` takes in the array and requires that its domain be 2-dimensional. 
+`proc takesArrayAndDomainShape(arr : [], d : domain(2))` takes in the array and requires that its domain be 2-dimensional. 
 
 
 ### Reduction

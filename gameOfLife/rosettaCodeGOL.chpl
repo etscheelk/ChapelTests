@@ -33,7 +33,7 @@ class ConwaysGameofLife
 		this.grid[this.computeDomain] = tempGrid;
 	}
 
-
+	
 	proc this(i : int, j : int) ref : State 
 	{
 		return this.grid[i,j];
