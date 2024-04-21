@@ -6,7 +6,11 @@ use IO;
 use image;
 
 //
-config const dim : int = 50;
+config var dim : uint(32) = 50;
+
+// Normally make a square with dim, but if these are set, set that dimension
+config var dimx : uint(32) = 0;
+config var dimy : uint(32) = 0;
 
 config const rot : real(64) = 1.724643921305295;
 
@@ -15,8 +19,14 @@ config const thetaOffset : real(64) = 3.0466792337230033;
 config const mult : real = 1;
 //
 
+dimx = if dimx == 0 then dim else dimx;
+dimy = if dimy == 0 then dim else dimy;
+dim = min(dimx, dimy);
 
-var density : [0..#dim, 0..#dim] atomic uint(16) = 0;
+var densityDomain : domain(2) = {0..#dimy, 0..#dimx};
+var density : [densityDomain] atomic uint(16) = 0;
+
+// var density : [0..#dim, 0..#dim] atomic uint(16) = 0;
 
 const numPts : uint(64) = (100_000_000 * mult):uint(64);
 const numRands : uint(64) = numPts / 64;
@@ -57,7 +67,8 @@ with
         {
             var rad = x * 0.5 + 0.5;
             // var theta = y * pi * thetaOffset; // mistake
-            var theta = y * pi + thetaOffset;
+            // var theta = y * pi + thetaOffset;
+            var theta = y * pi * thetaOffset + thetaOffset;
 
             x = rad * cos(theta);
             y = rad * sin(theta);
@@ -66,8 +77,11 @@ with
         // Add point to density
         var xx = (x / 2.0 + 0.5) * dim;
         var yy = (y / 2.0 + 0.5) * dim;
-        if (xx > 0 && xx < dim && yy > 0 && yy < dim) {
-            density[xx:uint(32), yy:uint(32)].add(1:uint(16));
+        if (xx > 0 && xx < dimx && yy > 0 && yy < dimy) {
+            density[
+                (yy + if dimy > dim then (dimy - dim)/2.0 else 0):uint(32), 
+                (xx + if dimx > dim then (dimx - dim)/2.0 else 0):uint(32)
+            ].add(1:uint(16));
         }
     }
 }
