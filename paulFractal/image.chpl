@@ -149,7 +149,7 @@ proc writeImageBMP(outfile, pixels) {
   for i in pixels.domain.dim(0) {
     var nbits = 0;
     for j in pixels.domain.dim(1) {
-      var p = pixels[i,j].read();
+      var p = pixels[i,j].read():uint(32);
       var redv = (p >> colorOffset(red)) & colorMask;
       var greenv = (p >> colorOffset(green)) & colorMask;
       var bluev = (p >> colorOffset(blue)) & colorMask;
