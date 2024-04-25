@@ -5,12 +5,13 @@
 # Compiler Error Messages
 errs = --print-all-candidates
 
-deps = main.chpl
 
-out = main
+cpuFractal: cpuFractal.chpl
+	chpl cpuFractal.chpl $(errs) -o cpuFractal --fast
 
-$(out): $(deps) image.chpl
-	chpl $(errs) $(deps) -o $(out) --fast
+
+gpuFractal: gpuFractal.chpl
+	chpl gpuFractal.chpl $(errs) -o gpuFractal --fast
 
 
 clean:

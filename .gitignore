@@ -4,7 +4,8 @@
 */vectorAdd/CvectorAdd
 **/reduction1
 **/gol
-**/paulFractal/main
+**/paulFractal/cpuFractal
 **/simplePar/simplePar
 **/rosgol
 **/patternlets/arrays/arrays
+
