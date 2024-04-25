@@ -217,16 +217,57 @@ First is the most basic way:
 `proc takesArrayAndDomainShape(arr : [], d : domain(2))` takes in the array and requires that its domain be 2-dimensional. 
 
 
+
 ### Reduction
 
-- Plain reduces
-- Reduces on for-loops (`with` syntax, can also touch on intents here)
+Chapel offers the keyword `reduce` for a variety of use cases and it need not be tied to a forall loop. 
+
+For example, if you have an array `A`, you can get the sum of `A` with `var sumA = + reduce A;`, given that `A` contains numerical types where the reduction can be applied. 
+
+The other reduction operations are 
+    
+    + * && || & | ^ 'min' 'max' 'minmax' 'minloc' 'maxloc'
+
+Here, `minloc` and `maxloc` will return the minimum or maximum and the index it was at. It requires zippering the array with the set of indices, typically `var (minimum, loc) = minloc reduce zip(A, A.domain);`.
+
+Custom reduction operations can be written. See Chapel documentation for details. 
+
+#### Parallel loop reduction
+
+If you wish to reduce a parallel loop, you can place a `reduce` in a `with` clause as part of the loop specification.
+
+```chapel
+var m : uint(64) = 0;
+var sum : uint(64) = 0;
+forall i in density with(+ reduce sum, max reduce m) 
+{
+    sum += i.read();
+    m = max(m, i.read());
+}
+```
+The above example shows an addition and a maximum reduce used within a forall loop operating on an array of atomic integers. 
+
 
 ### Variables part 2
 
-- Atomic (relevant for parallel on primitive types [not strings])
-- Sync
-- intents (in, out, inout, ref, const, const ref, ...)
+Variables in Chapel also come in extra "flavors", such as `sync` and `atomic` pertaining to parallel-safety and communication, as well as "intents" describing how it will be used like `const`, `ref`, `in`, and so on. 
+
+#### Atomic
+
+An atomic variable can be created with `var x : atomic int(64) = 0;`. Atomic variables can only be of primitive numerical types `bool`, `int`, `uint`, and `real`. 
+
+The basic operations like `+` and `-` are not directly supported with atomic variables, wherein you must use a member function like `x.read()` to access the stored value or `x.add(1)` and `x.write(1)` to set a particular value.
+
+See the [Chapel Documentation](https://chapel-lang.org/docs/language/spec/task-parallelism-and-synchronization.html#atomic-variables) for more details. 
+
+#### Sync
+
+#### Intents
+
+- const
+- ref
+
+<!-- - intents (in, out, inout, ref, const, const ref, ...) -->
 
 ### "Structured Types"
 

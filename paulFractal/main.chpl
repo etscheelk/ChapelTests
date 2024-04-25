@@ -89,15 +89,22 @@ writeln("Time to do points: ", timer.elapsed(), " s");
 timer.reset();
 
 
+// var brightest : uint(32);
+// forall i in pixels with(max reduce brightest) {
+//     brightest = max(i.read(), brightest);
+// }
+var m : uint(64) = 0;
 var sum : uint(64) = 0;
-forall i in density with(+ reduce sum) 
+forall i in density with(+ reduce sum, max reduce m) 
 {
     sum += i.read();
+    m = max(m, i.read());
 }
 if (sum != numPts)
 {
     writeln("Race condition spotted! Incorrect sum at conclusion.");
 }
+writeln("Max brightness: ", m);
 
 
 
