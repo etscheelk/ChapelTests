@@ -59,7 +59,7 @@ for (int i = 1; i <= 10; ++i)
 
 In this case, the differences are not too great, but this is the minimum difference in code complexity between any two other comparisons. Writing in parallel is part of Chapel's keywords and a new Chapel programmer will often use implicit parallel processes without being the wiser.
 
-For example, if you have two arrays of the same length `A` and `B`, Chapel allows `var C = A + B`. This will promote array item addition to a parallel loop. 
+One example of an implicit parallel process is array addition. If you have two arrays `A` and `B`, Chapel allows `var C = A + B`. This array additional will be completed in parallel. 
 
 #### Simple Task Parallel
 
@@ -163,7 +163,7 @@ $$
 
 Alternate sizes from default are written by appending parentheses containing the size in bits. For example, `int` is default 64 bits, `int(32)` is a 32 bit int. 
 
-There are additional variable flavors, such as `sync`, `const`, and `atomic`. 
+There are additional variable flavors, such as `sync`, `const`, and `atomic` which will be discussed later, alongside argument intents and return intents. 
 
 ### Comments
 
@@ -182,7 +182,7 @@ Block comment
 #### Simple Creation
 
 The most basic Chapel array can be created with `var A: [1..10] real;`. This will create
-an array of 10 elements initialized to 0.0, where `1..10` *represents the set of indices* of `A`. This means `A[0]` *will result in a runtime error*. 
+an array of 10 elements initialized to 0.0, where `1..10` *represents the set of indices* of `A`, 1 through 10. This means `A[0]` *will result in a runtime error*. 
 
     error: halt reached - array index out of bounds
     note: index was 0 but array bounds are 1..10
@@ -258,16 +258,104 @@ An atomic variable can be created with `var x : atomic int(64) = 0;`. Atomic var
 
 The basic operations like `+` and `-` are not directly supported with atomic variables, wherein you must use a member function like `x.read()` to access the stored value or `x.add(1)` and `x.write(1)` to set a particular value.
 
-See the [Chapel Documentation](https://chapel-lang.org/docs/language/spec/task-parallelism-and-synchronization.html#atomic-variables) for more details. 
+See the [Chapel Documentation](https://chapel-lang.org/docs/language/spec/task-parallelism-and-synchronization.html#atomic-variables) for more details.
+
+Atomic variables are accessible only on the CPU. 
+Other techniques must be used for atomic operations on the GPU. 
 
 #### Sync
 
-#### Intents
+> Synchronization variables have a logical state associated with the value. The state of the variable is either full or empty. Normal reads of a synchronization variable cannot proceed until the variable’s state is full. Normal writes of a synchronization variable cannot proceed until the variable’s state is empty.
+>
+> [chapel-lang.org](chapel-lang.org)
 
-- const
-- ref
+Sync is a type flavor of primitive types `nothing`, `bool`, `int`, `uint`, `real`, `imag`, `complex`, `range`, `bytes`, and `string`; enumerated types; classes; and records.
+
+In essence, a sync variable is a regular variable with an extra boolean "empty" or "full" contained alongside, yet that is not all. 
+If you have a sync variable `var release : sync bool;` it will be by default empty. 
+If a task tries to read or write to a sync variable that is not in the correct state the task will be blocked. 
+If multiple tasks are waiting for a sync variable to enter the correct state, **a random task will be selected to continue** and the others will continue to wait, depending on the action of the active task. 
+
+For instance,
+
+```chapel
+var count: sync int = n;  // counter which also serves as a lock
+var release: sync bool; // barrier release
+
+forall t in 1..n do begin 
+{
+    foo(t); // Some amount of work
+
+    var myCount = count.readFE();  // read the count, set state to empty
+
+    if myCount != 1 
+    {
+        write(".");
+        count.writeEF(myCount - 1);   // update the count, set state to full
+
+        // we could also do some work here before blocking
+
+        release.readFF();
+    } 
+
+    else 
+    {
+        release.writeEF(true);  // last one here, release everyone
+        writeln("done");
+    }
+}
+```
+
+Sync variable `count` is initialized with value `n` and state `full`, release is not ititialized so it is state `empty` and has default value for the base type (`false`).
+
+Much like atomic variables, normal reads, writes, and mathematical operations cannot be performed on sync variables without use of functions. 
+
+1. `proc sync.readFE() out : T`
+   1. Block until the sync variable is full
+   2. Once full, read and return copy of its value
+   3. Set to empty, continue (value unchanged)
+2. `proc sync.readFF() out : T`
+   1. Block until the sync variable is full
+   2. Once full, read and return copy of its value
+   3. **Leave full**, continue (value unchanged)
+3. ` proc sync.writeEF(in val : T) : void`
+   1. Block until the sync variable is empty
+   2. Write `val` into the value of the sync variable
+   3. Set to full, continue
+
+The following functions are noted as unstable due to danger with race conditions:
+
+4. `proc sync.readXX() out : T`
+   1. Without blocking read the value of the sync variable
+   2. Do not change the state
+   3. Return copy of variable if full. If empty, return default value if possible else last value stored.
+   4. Continue
+5. `proc sync.writeFF(in val : T) out : T`
+   1. Block until sync variable is full
+   2. Write `val` into value of sync variable
+   3. Do not change state. Continue on.
+6. `proc sync.writeXF(in val : T) : void`
+   1. Do not block (no matter the state)
+   2. Write `val` into sync variable value
+   3. Set state to full, continue.
+7. `proc sync.reset() : void` 
+   1. Non-blocking
+   2. Reset value of sync variable to default
+   3. Set state to empty
+8. `proc sync.isFull : bool`
+   1. Non-blocking
+   2. Return boolean stating whether the sync variable is full
+
+A sync variable is by default passed as reference as an argument to a function, and this is the only supported option. A procedure return intent other than `ref` for sync variables is not supported. 
+Initialization from another sync is deprecated, except through standard read functions.
+
+As an argument to a function it can be written as `foo(x)`, `foo(ref x)`, or `foo(x : sync bool)`, or `foo(ref x : sync bool)`. 
+
+
 
 <!-- - intents (in, out, inout, ref, const, const ref, ...) -->
+
+
 
 ### "Structured Types"
 
