@@ -4,13 +4,13 @@
 config const gridHeight : int = 3;
 config const gridWidth  : int = 3;
 
-enum State { dead = 0, alive = 1 };
+enum state { dead = 0, alive = 1 };
 
 class ConwaysGameofLife 
 {
 	var gridDomain : domain(2, int);
 	var computeDomain : subdomain(gridDomain);
-	var grid : [gridDomain] State;
+	var grid : [gridDomain] state;
 
 	proc init(height : int, width : int) 
 	{
@@ -19,22 +19,22 @@ class ConwaysGameofLife
 	}
 
 
-	proc step()
+	proc step() : void
 	{
-		var tempGrid: [this.computeDomain] State;
+		var tempGrid: [this.computeDomain] state;
 
 		forall (i,j) in this.computeDomain 
 		{
-			var isAlive = this.grid[i,j] == State.alive;
-			var numAlive = (+ reduce this.grid[ i-1..i+1, j-1..j+1 ]:int) - if isAlive then 1 else 0;      
-			tempGrid[i,j] = if ( (2 == numAlive && isAlive) || numAlive == 3 ) then State.alive else State.dead ;
+			var isAlive = this.grid[i,j] == state.alive;
+			var numAlive = (+ reduce this.grid[i-1..i+1, j-1..j+1]:int) - if isAlive then 1 else 0;      
+			tempGrid[i,j] = if ( (2 == numAlive && isAlive) || numAlive == 3 ) then state.alive else state.dead ;
 		}
 
 		this.grid[this.computeDomain] = tempGrid;
 	}
 
 	
-	proc this(i : int, j : int) ref : State 
+	proc this(i : int, j : int) ref : state 
 	{
 		return this.grid[i,j];
 	}
@@ -62,12 +62,12 @@ class ConwaysGameofLife
 					} 
 					else 
 					{
-						str += if this.grid[i,j] == State.alive then "#" else " ";
+						str += if this.grid[i,j] == state.alive then "#" else " ";
 					}
 				}
 			}
-			str += "\n";
 		
+			str += "\n";
 		}
 
 		return str;
@@ -81,9 +81,9 @@ proc main()
 {
 	var game = new ConwaysGameofLife(gridHeight, gridWidth);
 
-	game[gridHeight/2 + 1, gridWidth/2     ] = State.alive;
-	game[gridHeight/2 + 1, gridWidth/2 + 1 ] = State.alive;
-	game[gridHeight/2 + 1, gridWidth/2 + 2 ] = State.alive;
+	game[gridHeight/2 + 1, gridWidth/2     ] = state.alive;
+	game[gridHeight/2 + 1, gridWidth/2 + 1 ] = state.alive;
+	game[gridHeight/2 + 1, gridWidth/2 + 2 ] = state.alive;
 
 	for i in 1..3 
 	{
