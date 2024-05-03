@@ -15,4 +15,4 @@ gpuFractal: gpuFractal.chpl
 
 
 clean:
-	rm -f $(out)
+	rm -f cpuFractal gpuFractal

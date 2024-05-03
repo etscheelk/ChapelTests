@@ -141,11 +141,11 @@ proc writeImageBMP(outfile, pixels) {
   outfile.writeBinary(0:uint(32), endianness.little); /* colors in palette */
   outfile.writeBinary(0:uint(32), endianness.little); /* "important" colors */
 
-  var brightest : uint(32);
-  forall i in pixels with(max reduce brightest) {
-    brightest = max(i.read(), brightest);
-  }
-  writeln(brightest);
+  // var brightest : uint(32);
+  // forall i in pixels with(max reduce brightest) {
+  //   brightest = max(i.read(), brightest);
+  // }
+  // writeln(brightest);
   for i in pixels.domain.dim(0) {
     var nbits = 0;
     for j in pixels.domain.dim(1) {
