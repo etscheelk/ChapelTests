@@ -63,7 +63,7 @@ timer.start();
 forall r in randArr 
 with
 (
-    var x = 0.7,
+    var x = 0.0,
     var y = 0.5,
     ref density
 )
