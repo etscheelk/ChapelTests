@@ -20,6 +20,11 @@ var holdOut2 : bool = hold.readFE();
 writeln(holdOut2);
 
 
+forall i in 1..100
+{
+
+}
+
 // flawed example
 writeln("\n----\n");
 var wait : sync bool;

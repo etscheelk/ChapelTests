@@ -3,6 +3,9 @@ use Random;
 // The Reduction or Reduce Intents documention is everything
 writeln("Reduction operations!");
 
+// Reduce / Scan operators
+// + * && || & | ^ 'min' 'max' 'minmax' 'minloc' 'maxloc'
+
 var A : [1..200] int = 0;
 
 var r = new randomStream(int);
@@ -32,3 +35,9 @@ writeln(B[1..20]);
 // Reduce on a portion 
 writeln(+ reduce A[1..5]);
 
+var scanTestArr : [1..100, 1..100] int;
+Random.fillRandom(scanTestArr);
+
+// writeln(minmax scan scanTestArr);
+
+writeln(minmax reduce scanTestArr);

@@ -72,6 +72,11 @@ writeln(binsearch([3, 4, 6, 9, 11], 9.0));
 var test2D : [1..5, 1..5] int = 0;
 Random.fillRandom(test2D);
 
+
+coforall tid in 0..#here.maxTaskPar {
+  
+}
+
 // binsearch(test2D, 3);
 
 // delete c;
