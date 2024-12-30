@@ -1,7 +1,6 @@
 use Random;
 
 
-
 proc multiply(a, b) out
 {
     return a * b;
